@@ -15,7 +15,7 @@ def get_unique_short_id():
     """Функция генерации короткой ссылки."""
     short = ''.join(random.choice(
             string.ascii_letters + string.digits
-            ) for _ in range(6))
+    ) for _ in range(6))
     if URLMap.query.filter_by(short=short).first() is not None:
         get_unique_short_id()
     return short

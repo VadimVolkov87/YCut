@@ -20,7 +20,7 @@ class URLMapForm(FlaskForm):
         'Ваш вариант короткой ссылки',
         validators=[Length(
             1, 16, message='Ссылка должна быть от 1 до 16 знаков'
-            ), Optional()],
+        ), Optional()],
         id='form-link',
         default=''
     )

@@ -36,8 +36,8 @@ def create_short_link():
     link_dict = link.to_dict()
     return (jsonify(
         {'url': link_dict['original'],
-         'short_link': f'{request.url.split("api")[0] + link_dict["short"]}'}),
-         201)
+         'short_link': f'{request.url.split("api")[0] + link_dict["short"]}'}
+    ), 201)
 
 
 @app.route('/api/id/<short_id>/', methods=['GET'])
