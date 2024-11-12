@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 .vscode
+postman_collection/
+openapi.yml
