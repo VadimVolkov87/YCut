@@ -42,6 +42,18 @@ source venv/Scripts/activate
 pip install -r requirements.txt
 ```
 
+Создать миграции:
+
+```bash
+flask db migrate -m "Create db"
+```
+
+Применить миграции(создать базу данных):
+
+```bash
+flask db upgrade
+```
+
 Запустить сервер командой терминала из корневой директории проекта:
 
 ```bash
@@ -53,3 +65,4 @@ flask run
 Вадим Волков - разработка
 
 [Вадим Волков](https://github.com/VadimVolkov87/)
+[Flask API](https://flask.palletsprojects.com/en/stable/api/#)

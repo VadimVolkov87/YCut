@@ -18,24 +18,20 @@
               <div>
                 <input type="text" class="form-control form-control-lg py-2 mb-3" id="form-title" name="original_link"
                   placeholder="{{ form.original_link.label.text }}" value="{{ form.original_link.data }}">
-                {% if form.original_link.errors %}
                 <p><span style="color:red">
                   {% for error in form.original_link.errors %}
                       {{ error }}
                   {% endfor %}
                 </span></p>
-                {% endif %}
               </div>
               <div>
                 <input type="url" class="form-control form-control-lg py-2 mb-3" id="form-link" name="custom_id"
                   placeholder="Ваш вариант короткой ссылки" value="{{ form.custom_id.data }}">
-                {% if form.custom_id.errors %}
                   <p><span style="color:red">
                     {% for error in form.custom_id.errors %}
                         {{ error }}
                     {% endfor %}
                   </span></p>
-                {% endif %}
               </div>
 
               <input type="submit" class="btn btn-primary" value="Создать">
@@ -54,17 +50,16 @@
         <div class="col-sm">
           <p class="text-center">
           <h5 class="text-center">
-            {% with messages = get_flashed_messages() %}
-              {% if messages %}
+            {% with messages = get_flashed_messages(category_filter=["warning-message"]) %}
                 {% for message in messages %}
-                    {% if 'http' in message %}
+                      {{ message }}
+                {% endfor %}
+            {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=["result-message"]) %}
+                {% for message in messages %}
                       Ваша новая ссылка готова:
                       <a href="{{ message }}">{{ message }}</a>
-                    {% else %}
-                      {{ message }}
-                    {% endif %}
                 {% endfor %}
-              {% endif %}
             {% endwith %}
           </h5>
           </p>
