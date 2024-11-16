@@ -6,7 +6,7 @@ from flask import jsonify, render_template
 from . import app, db
 
 
-class InvalidAPIUsage(Exception):
+class InvalidAppUsage(Exception):
     """Класс пользовательского исключения."""
 
     status_code = HTTPStatus.BAD_REQUEST
@@ -22,7 +22,7 @@ class InvalidAPIUsage(Exception):
         return dict(message=self.message)
 
 
-@app.errorhandler(InvalidAPIUsage)
+@app.errorhandler(InvalidAppUsage)
 def invalid_api_usage(error):
     """Обработчик кастомного исключения для API."""
     return jsonify(error.to_dict()), error.status_code
@@ -31,5 +31,11 @@ def invalid_api_usage(error):
 @app.errorhandler(HTTPStatus.NOT_FOUND)
 def page_not_found(error):
     """Обработчик исключения при отсутствии объекта."""
-    db.session.rollback()
     return render_template('404.html'), HTTPStatus.NOT_FOUND
+
+
+@app.errorhandler(HTTPStatus.INTERNAL_SERVER_ERROR)
+def internal_error(error):
+    """Обработчик исключения при ошибке сервера."""
+    db.session.rollback()
+    return render_template('500.html'), HTTPStatus.INTERNAL_SERVER_ERROR

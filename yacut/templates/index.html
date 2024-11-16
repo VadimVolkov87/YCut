@@ -50,17 +50,15 @@
         <div class="col-sm">
           <p class="text-center">
           <h5 class="text-center">
-            {% with messages = get_flashed_messages(category_filter=["warning-message"]) %}
+            {% with messages = get_flashed_messages() %}
                 {% for message in messages %}
                       {{ message }}
                 {% endfor %}
             {% endwith %}
-            {% with messages = get_flashed_messages(category_filter=["result-message"]) %}
-                {% for message in messages %}
-                      Ваша новая ссылка готова:
-                      <a href="{{ message }}">{{ message }}</a>
-                {% endfor %}
-            {% endwith %}
+            {% if message %}
+              Ваша новая ссылка готова:
+              <a href="{{ message }}"> {{ message }}</a>
+            {% endif %}
           </h5>
           </p>
         </div>

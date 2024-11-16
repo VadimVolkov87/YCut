@@ -42,12 +42,6 @@ source venv/Scripts/activate
 pip install -r requirements.txt
 ```
 
-Создать миграции:
-
-```bash
-flask db migrate -m "Create db"
-```
-
 Применить миграции(создать базу данных):
 
 ```bash
@@ -65,4 +59,5 @@ flask run
 Вадим Волков - разработка
 
 [Вадим Волков](https://github.com/VadimVolkov87/)
-[Flask API](https://flask.palletsprojects.com/en/stable/api/#)
+
+[Yacut API](https://github.com/VadimVolkov87/yacut/blob/master/openapi.yml)
