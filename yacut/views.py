@@ -18,7 +18,7 @@ def index_view():
     if not form.validate_on_submit():
         return render_template('index.html', form=form)
     if form.custom_id.data != '' and URLMap.get_entry(
-         short=form.custom_id.data
+        short=form.custom_id.data
     ):
         flash(SHORT_EXISTS)
         return render_template('index.html', form=form)
