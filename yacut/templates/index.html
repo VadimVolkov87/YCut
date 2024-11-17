@@ -55,9 +55,9 @@
                       {{ message }}
                 {% endfor %}
             {% endwith %}
-            {% if message %}
+            {% if result_message %}
               Ваша новая ссылка готова:
-              <a href="{{ message }}"> {{ message }}</a>
+              <a href="{{ result_message }}"> {{ result_message }}</a>
             {% endif %}
           </h5>
           </p>

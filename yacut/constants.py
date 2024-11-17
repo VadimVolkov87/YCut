@@ -9,8 +9,6 @@ USER_SHORT_RANGE = 16
 
 LONG_LINK_RANGE = 2048
 
-SHORT_SYMBOLS_REGEX = r'^[{0}]+$'.format(SHORT_SYMBOLS)
+SHORT_SYMBOLS_REGEX = rf'^[{SHORT_SYMBOLS}]+$'
 
-REDIRECT_VIEW = "redirect_view"
-
-INDEX_VIEW = 'index_view'
+REDIRECT_VIEW = 'redirect_view'

@@ -2,20 +2,16 @@
 import random
 import re
 
+from flask import url_for
 from sqlalchemy.sql.functions import current_timestamp
 
 from yacut import db
-from .constants import (GENERATED_SHORT_RANGE, LONG_LINK_RANGE,
+from .constants import (GENERATED_SHORT_RANGE, LONG_LINK_RANGE, REDIRECT_VIEW,
                         SHORT_SYMBOLS, SHORT_SYMBOLS_REGEX, USER_SHORT_RANGE)
-from .error_handlers import InvalidAppUsage
 
 BAD_NAME = 'Указано недопустимое имя для короткой ссылки'
 SHORT_EXISTS = 'Предложенный вариант короткой ссылки уже существует.'
-
-
-def get_unique_short():
-    """Функция генерации короткой ссылки."""
-    return ''.join(random.choices(SHORT_SYMBOLS, k=GENERATED_SHORT_RANGE))
+UNACCEPTABLE_URL_RANGE = 'Количество символов больше допустимого'
 
 
 class URLMap(db.Model):
@@ -29,29 +25,42 @@ class URLMap(db.Model):
                           default=current_timestamp())
 
     @staticmethod
+    def get_unique_short():
+        """Функция генерации короткой ссылки."""
+        short = ''.join(random.choices(SHORT_SYMBOLS, k=GENERATED_SHORT_RANGE))
+        if URLMap.get_entry(short=short):
+            random.shuffle(short)
+        return short
+
+    @staticmethod
     def get_entry(short):
         """Метод получения короткой ссылки."""
         return URLMap.query.filter_by(short=short).first()
 
     @staticmethod
-    def add_entry(url, short=None, flag=0):
+    def add_entry(url, short=None, come_from=0):
         """Метод проверки и создания записи в базе данных."""
-        if flag == 0 and short and short != '':
-            if not re.fullmatch(SHORT_SYMBOLS_REGEX, short):
-                raise InvalidAppUsage(BAD_NAME)
+        if come_from == 0 and len(url) > LONG_LINK_RANGE:
+            raise ValueError(UNACCEPTABLE_URL_RANGE)
+        if come_from == 0 and short:
             if len(short) > USER_SHORT_RANGE:
-                raise InvalidAppUsage(BAD_NAME)
-            if URLMap.get_entry(short=short):
-                raise InvalidAppUsage(SHORT_EXISTS)
-        if not short or short == '':
-            short = get_unique_short()
+                raise ValueError(BAD_NAME)
+            if not re.fullmatch(SHORT_SYMBOLS_REGEX, short):
+                raise ValueError(BAD_NAME)
+        if short and URLMap.get_entry(short=short):
+            raise ValueError(SHORT_EXISTS)
+        if not short:
+            short = URLMap.get_unique_short()
         url_map = URLMap(
             original=url,
             short=short
         )
         db.session.add(url_map)
         db.session.commit()
-        return url_map
+        return (
+            url_map.original,
+            url_for(REDIRECT_VIEW, short=url_map.short, _external=True)
+        )
 
     def to_dict(self):
         """Метод превращающий объект класса в словарь."""

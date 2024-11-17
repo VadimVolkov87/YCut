@@ -27,8 +27,8 @@ class URLMapForm(FlaskForm):
     custom_id = StringField(
         USER_SHORT,
         validators=[Length(
-            1, USER_SHORT_RANGE, message=SHORT_LENGTH
-        ), Regexp(SHORT_SYMBOLS_REGEX, flags=0,
+            max=USER_SHORT_RANGE, message=SHORT_LENGTH
+        ), Regexp(SHORT_SYMBOLS_REGEX,
                   message=UNACCEPTABLE_SYMBOLS), Optional()],
         id='form-link',
         default=''
