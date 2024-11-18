@@ -26,10 +26,11 @@ def create_short_link():
             url=data['url'],
             short=data.get('custom_id')
         )
-    except Exception as error:
+    except ValueError as error:
         raise InvalidAppUsage(str(error))
     return (jsonify(
-        {'url': url_map[0], 'short_link': url_map[1]}
+        {'url': data['url'],
+         'short_link': URLMap.create_short_url(url_map.short)}
     ), HTTPStatus.CREATED)
 
 
