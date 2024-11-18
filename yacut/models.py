@@ -26,17 +26,23 @@ class URLMap(db.Model):
 #  current_timestump без () не работает, выдает ошибку.
 
     @staticmethod
-    def create_short_url(short):
+    def short_url(short):
         """Метод создания короткой ссылки."""
         return url_for(REDIRECT_VIEW, short=short, _external=True)
 
     @staticmethod
     def get_unique_short():
         """Функция генерации короткого идентификатора."""
-        short = ''.join(random.choices(SHORT_SYMBOLS, k=GENERATED_SHORT_RANGE))
-        while URLMap.get_entry(short=short):
-            random.shuffle(short)
-        return short
+        short = lambda: ''.join(random.choices(
+            SHORT_SYMBOLS, k=GENERATED_SHORT_RANGE
+        ))
+        short = short()
+        for _ in range(100):  # Больше идей нет.
+            if URLMap.get_entry(short=short):
+                short = short()
+            else:
+                return short
+        return short()
 
     @staticmethod
     def get_entry(short):
@@ -44,11 +50,11 @@ class URLMap(db.Model):
         return URLMap.query.filter_by(short=short).first()
 
     @staticmethod
-    def add_entry(url, short=None, data_source=0):
+    def add_entry(url, short=None, validate=1):
         """Метод проверки и создания записи в базе данных."""
-        if data_source == 0 and len(url) > LONG_LINK_RANGE:
+        if validate == 1 and len(url) > LONG_LINK_RANGE:
             raise ValueError(UNACCEPTABLE_URL_RANGE)
-        if data_source == 0 and short:
+        if validate == 1 and short:
             if len(short) > USER_SHORT_RANGE:
                 raise ValueError(BAD_NAME)
             if not re.fullmatch(SHORT_SYMBOLS_REGEX, short):

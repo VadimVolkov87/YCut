@@ -20,14 +20,14 @@ def index_view():
         url_map = URLMap.add_entry(
             url=form.original_link.data,
             short=form.custom_id.data,
-            data_source=1
+            validate=0
         )
     except ValueError as error:
         flash(error)
         return render_template('index.html', form=form)
     return render_template(
         'index.html', form=form,
-        short_url=URLMap.create_short_url(url_map.short)
+        short_url=URLMap.short_url(url_map.short)
     )
 
 

@@ -28,10 +28,10 @@ def create_short_link():
         )
     except ValueError as error:
         raise InvalidAppUsage(str(error))
-    return (jsonify(
-        {'url': data['url'],
-         'short_link': URLMap.create_short_url(url_map.short)}
-    ), HTTPStatus.CREATED)
+    return (jsonify(dict(
+        url=data['url'],
+        short_link=URLMap.short_url(url_map.short)
+    )), HTTPStatus.CREATED)
 
 
 @app.route('/api/id/<short_id>/', methods=['GET'])
