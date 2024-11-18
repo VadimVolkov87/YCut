@@ -23,7 +23,13 @@ class URLMap(db.Model):
                       unique=True, nullable=False)
     timestamp = db.Column(db.DateTime, index=True, nullable=False,
                           default=current_timestamp())
-#  current_timestump без () не работает, выдает ошибку.
+
+    @ staticmethod
+    def get_short():
+        """Функция генерации короткого идентификатора."""
+        return ''.join(random.choices(
+            SHORT_SYMBOLS, k=GENERATED_SHORT_RANGE
+        ))
 
     @staticmethod
     def short_url(short):
@@ -32,17 +38,14 @@ class URLMap(db.Model):
 
     @staticmethod
     def get_unique_short():
-        """Функция генерации короткого идентификатора."""
-        short = lambda: ''.join(random.choices(
-            SHORT_SYMBOLS, k=GENERATED_SHORT_RANGE
-        ))
-        short = short()
-        for _ in range(100):  # Больше идей нет.
+        """Функция проверки короткого идентификатора."""
+        short = URLMap.get_short()
+        for _ in range(1000):  # Больше идей нет.
             if URLMap.get_entry(short=short):
-                short = short()
+                short = URLMap.get_short()
             else:
                 return short
-        return short()
+        return ValueError(SHORT_EXISTS)
 
     @staticmethod
     def get_entry(short):
