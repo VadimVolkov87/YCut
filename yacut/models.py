@@ -41,7 +41,7 @@ class URLMap(db.Model):
             if URLMap.get_entry(short=short):
                 continue
             return short
-        raise StopIteration(SHORT_NOT_GENERATED)
+        raise OSError(SHORT_NOT_GENERATED)
 
     @staticmethod
     def get_entry(short):
