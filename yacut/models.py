@@ -6,8 +6,9 @@ from flask import url_for
 from sqlalchemy.sql.functions import current_timestamp
 
 from yacut import db
-from .constants import (GENERATED_SHORT_RANGE, LONG_LINK_RANGE, REDIRECT_VIEW,
-                        SHORT_SYMBOLS, SHORT_SYMBOLS_REGEX, USER_SHORT_RANGE)
+from .constants import ( ATTEMPTS, GENERATED_SHORT_RANGE, LONG_LINK_RANGE,
+                         REDIRECT_VIEW, SHORT_SYMBOLS, SHORT_SYMBOLS_REGEX,
+                         USER_SHORT_RANGE)
 
 BAD_NAME = 'Указано недопустимое имя для короткой ссылки'
 SHORT_EXISTS = 'Предложенный вариант короткой ссылки уже существует.'
@@ -24,13 +25,6 @@ class URLMap(db.Model):
     timestamp = db.Column(db.DateTime, index=True, nullable=False,
                           default=current_timestamp())
 
-    @ staticmethod
-    def get_short():
-        """Функция генерации короткого идентификатора."""
-        return ''.join(random.choices(
-            SHORT_SYMBOLS, k=GENERATED_SHORT_RANGE
-        ))
-
     @staticmethod
     def short_url(short):
         """Метод создания короткой ссылки."""
@@ -39,13 +33,13 @@ class URLMap(db.Model):
     @staticmethod
     def get_unique_short():
         """Функция проверки короткого идентификатора."""
-        short = URLMap.get_short()
-        for _ in range(1000):  # Больше идей нет.
+        for _ in range(ATTEMPTS):
+            short = ''.join(random.choices(SHORT_SYMBOLS,
+                                           k=GENERATED_SHORT_RANGE))
             if URLMap.get_entry(short=short):
-                short = URLMap.get_short()
-            else:
-                return short
-        return ValueError(SHORT_EXISTS)
+                continue
+            return short
+        return short
 
     @staticmethod
     def get_entry(short):
@@ -55,9 +49,9 @@ class URLMap(db.Model):
     @staticmethod
     def add_entry(url, short=None, validate=1):
         """Метод проверки и создания записи в базе данных."""
-        if validate == 1 and len(url) > LONG_LINK_RANGE:
+        if validate and len(url) > LONG_LINK_RANGE:
             raise ValueError(UNACCEPTABLE_URL_RANGE)
-        if validate == 1 and short:
+        if validate and short:
             if len(short) > USER_SHORT_RANGE:
                 raise ValueError(BAD_NAME)
             if not re.fullmatch(SHORT_SYMBOLS_REGEX, short):
