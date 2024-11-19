@@ -22,7 +22,7 @@ def index_view():
             short=form.custom_id.data,
             validate=0
         )
-    except ValueError as error:
+    except Exception as error:
         flash(error)
         return render_template('index.html', form=form)
     return render_template(

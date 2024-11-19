@@ -26,7 +26,7 @@ def create_short_link():
             url=data['url'],
             short=data.get('custom_id')
         )
-    except ValueError as error:
+    except Exception as error:
         raise InvalidAppUsage(str(error))
     return (jsonify(dict(
         url=data['url'],

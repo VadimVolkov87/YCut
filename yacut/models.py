@@ -13,8 +13,8 @@ from .constants import (ATTEMPTS, GENERATED_SHORT_RANGE, LONG_LINK_RANGE,
 BAD_NAME = 'Указано недопустимое имя для короткой ссылки'
 SHORT_EXISTS = 'Предложенный вариант короткой ссылки уже существует.'
 UNACCEPTABLE_URL_RANGE = 'Количество символов больше допустимого'
-SHORT_IS_NONE = ('Что-то пошло не так. Попробуйте воспользоваться сервисом '
-                 'через пару минут.')
+SHORT_NOT_GENERATED = (f'Сделано {ATTEMPTS} попыток, но сгенерировать короткую'
+                       ' ссылку не удалось. Попробуйте снова.')
 
 
 class URLMap(db.Model):
@@ -41,7 +41,7 @@ class URLMap(db.Model):
             if URLMap.get_entry(short=short):
                 continue
             return short
-        return None
+        raise StopIteration(SHORT_NOT_GENERATED)
 
     @staticmethod
     def get_entry(short):
@@ -62,8 +62,6 @@ class URLMap(db.Model):
             raise ValueError(SHORT_EXISTS)
         if not short:
             short = URLMap.get_unique_short()
-            if not short:
-                raise OSError(SHORT_IS_NONE)
         url_map = URLMap(
             original=url,
             short=short
