@@ -6,9 +6,9 @@ from flask import url_for
 from sqlalchemy.sql.functions import current_timestamp
 
 from yacut import db
-from .constants import ( ATTEMPTS, GENERATED_SHORT_RANGE, LONG_LINK_RANGE,
-                         REDIRECT_VIEW, SHORT_SYMBOLS, SHORT_SYMBOLS_REGEX,
-                         USER_SHORT_RANGE)
+from .constants import (ATTEMPTS, GENERATED_SHORT_RANGE, LONG_LINK_RANGE,
+                        REDIRECT_VIEW, SHORT_SYMBOLS, SHORT_SYMBOLS_REGEX,
+                        USER_SHORT_RANGE)
 
 BAD_NAME = 'Указано недопустимое имя для короткой ссылки'
 SHORT_EXISTS = 'Предложенный вариант короткой ссылки уже существует.'
